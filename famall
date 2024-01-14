@@ -1,0 +1,35 @@
+version: '3.4'
+services:
+  drupal:
+    image: bitnami/drupal:latest
+    environment:
+    ports:
+      - 8080:8080
+    volumes:
+      - drupal_data:/bitnami/drupal
+  db:
+    image: bitnami/mariadb:latest
+    environment:
+      - MARIADB_USER=YAM428
+      - MARIADB_PASSWORD=<30720132>
+      - MARIADB_DATABASE=final
+     volumes:
+      - db_data:/bitnami/mariadb
+  webserver:
+    image: nginx
+    ports:
+      - 80:80
+    volumes:
+      - drupal_data:/bitnami/drupal
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  certificate:
+    image: certbot
+    command: certonly --webroot --webroot-path=/var/www/html --email your-aldroubi.leen@std.izu.edu.tr --agree-tos --no-eff-email -d your- firstdomain.me
+    volumes:
+      - ./certbot_data:/var/www/html
+    depends_on:
+      - webserver
+volumes:
+  drupal_data:
+  db_data:
+  certbot_data:
